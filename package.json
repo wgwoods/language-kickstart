@@ -1,0 +1,11 @@
+{
+  "name": "language-kickstart",
+  "version": "0.0.1",
+  "description": "language support for kickstart files",
+  "homepage": "http://atom.github.io/language-kickstart",
+  "repository": "https://github.com/wgwoods/language-kickstart.git",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  }
+}

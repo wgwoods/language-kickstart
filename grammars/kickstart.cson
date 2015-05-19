@@ -1,0 +1,158 @@
+'scopeName': 'source.kickstart'
+'name': 'Kickstart'
+'fileTypes': [
+    'ks'
+]
+'firstLineMatch': '^#( [kK]ickstart|version=(DEVEL|F\\d+|RHEL\\d+))\\b'
+'patterns': [
+  # scriptlets (%pre, %post, etc.) for various interpreters
+  # TODO: should add other common ones (like what..?)
+  {
+    # e.g. --interpreter=/usr/bin/python
+    'begin': '^\\s*(%(?:pre|pre-install|post))\\b.*\\s--interpreter(?:\\s+|=)(\\S*python\\S*).*$'
+    'captures':
+      '1':
+        'name': 'keyword.control.scriptlet.kickstart'
+    'end':'^\\s*(%end)\\s*$'
+    'contentName': 'source.python.embedded.kickstart'
+    'name': 'scriptlet.python.kickstart'
+    'patterns': [
+      {
+        'include': 'source.python'
+      }
+      {
+        'match': '^\\s*(%(?:pre|pre-install|post|packages))'
+        'name': 'invalid.illegal.missingend.kickstart'
+      }
+    ]
+  }
+  {
+    # --interpreter=/bin/sh or similar
+    'begin': '^\\s*(%(?:pre|pre-install|post))\\b.*\\s--interpreter(?:\\s+|=)(\\S*sh\\b).*$'
+    'captures':
+      '1':
+        'name': 'keyword.control.scriptlet.kickstart'
+    'end':'^\\s*(%end)\\s*$'
+    'contentName': 'source.shell.embedded.kickstart'
+    'name': 'scriptlet.shell.kickstart'
+    'patterns': [
+      {
+        'include': 'source.shell'
+      }
+      {
+        'match': '^\\s*(%(?:pre|pre-install|post|packages))'
+        'name': 'invalid.illegal.missingend.kickstart'
+      }
+    ]
+  }
+  {
+    # unknown --interpreter: show like a heredoc
+    'begin': '^\\s*(%(?:pre|pre-install|post))\\b.*\\s--interpreter\\b.*$'
+    'captures':
+      '1':
+        'name': 'keyword.control.scriptlet.kickstart'
+    'end':'^\\s*(%end)\\s*$'
+    'contentName': 'string.unquoted.scriptlet.kickstart'
+    'name': 'scriptlet.unknown.kickstart'
+    'patterns': [
+      {
+        'match': '^\\s*(%(?:pre|pre-install|post|packages))'
+        'name': 'invalid.illegal.missingend.kickstart'
+      }
+    ]
+  }
+  {
+    # no --interpreter: assume shell
+    'begin': '^\\s*(%(?:pre|pre-install|post))\\b(\\s+--[^i][^n][^t]\\w+)*$'
+    'captures':
+      '1':
+        'name': 'keyword.control.scriptlet.kickstart'
+    'end':'^\\s*(%end)\\s*$'
+    'contentName': 'source.shell.embedded.kickstart'
+    'name': 'scriptlet.shell.kickstart'
+    'patterns': [
+      {
+        'include': 'source.shell'
+      }
+      {
+        'match': '^\\s*(%(?:pre|pre-install|post|packages))'
+        'name': 'invalid.illegal.missingend.kickstart'
+      }
+    ]
+  }
+  {
+    # comments. this is copy-and-pasted straight from python.cson, so don't ask
+    # me about the weird fancy lookahead stuff
+    'begin': '(^[ \\t]+)?(?=#)'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.whitespace.comment.leading.kickstart'
+    'end': '(?!\\G)'
+    'patterns': [
+      {
+        'begin': '#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.kickstart'
+        'end': '\\n'
+        'name': 'comment.line.number-sign.kickstart'
+      }
+    ]
+  }
+  # %packages section
+  {
+    'comment': 'packages section'
+    'begin': '^\\s*(%packages)\\b.*$'
+    'captures':
+      '1':
+        'name': 'keyword.control.packages.kickstart'
+    'end':'^\\s*(%end)\\s*$'
+    'name': 'packages.kickstart'
+    'patterns': [
+      {
+        'match': '^\\s*-?@\\^?.*$'
+        'name': 'string.unquoted.packages.group.kickstart'
+      }
+      {
+        'match': '^\\s*(%(?:pre|pre-install|post|packages))'
+        'name': 'invalid.illegal.missingend.kickstart'
+      }
+    ]
+  }
+  # kickstart commands
+  {
+    'comment': 'commands for installation UI'
+    'match': '^\\s*(cmdline|graphical|text|mediacheck|vnc)\\b'
+    'name': 'support.function.ui.kickstart'
+  }
+  {
+    'comment': 'commands for what to do after install completes'
+    'match': '^\\s*(halt|poweroff|shutdown|reboot)\\b'
+    'name': 'support.function.shutdown.kickstart'
+  }
+  {
+    'comment': 'commands for storage and disk layout'
+    'match': '^\\s*(autopart|bootloader|btrfs|clearpart|dmraid|fcoe|iscsi|iscsiname|logvol|multipath|part|partition|raid|volgroup|zerombr|zfcp|ignoredisk)\\b'
+    'name': 'support.function.disk.kickstart'
+  }
+  {
+    'comment': 'commands for system service configuration'
+    'match': '^\\s*(auth|authconfig|firewall|firstboot|monitor|network|realm|rootpw|selinux|services|sshkey|sshpw|skipx|timezone|user|group|xconfig|skipx)\\b'
+    'name': 'support.function.services.kickstart'
+  }
+  {
+    'comment': 'commands for internationalization'
+    'match': '^\\s*(lang|keyboard|timezone)\\b'
+    'name': 'support.function.i18n.kickstart'
+  }
+  {
+    'comment': 'commands for installation sources'
+    'match': '^\\s*(install|cdrom|repo|harddrive|liveimg|nfs|url)\\b'
+    'name': 'support.function.install.kickstart'
+  }
+  {
+    'comment': 'miscellaneous commands'
+    'match': '^\\s*(rescue|updates|device|autostep)\\b'
+    'name': 'support.function.misc.kickstart'
+  }
+]
