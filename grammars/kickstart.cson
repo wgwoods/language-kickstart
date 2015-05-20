@@ -5,10 +5,9 @@
 ]
 'firstLineMatch': '^#( [kK]ickstart|version=(DEVEL|F\\d+|RHEL\\d+))\\b'
 'patterns': [
-  # scriptlets (%pre, %post, etc.) for various interpreters
-  # TODO: should add other common ones (like what..?)
+  # scriptlets (%pre, %post, etc.) with language-specific syntax highlighting.
+  # python, perl, and shell are the only things I've ever seen used, so..
   {
-    # e.g. --interpreter=/usr/bin/python
     'begin': '^\\s*(%(?:pre|pre-install|post))\\b.*\\s--interpreter(?:\\s+|=)(\\S*python\\S*).*$'
     'captures':
       '1':
@@ -19,6 +18,24 @@
     'patterns': [
       {
         'include': 'source.python'
+      }
+      {
+        'match': '^\\s*(%(?:pre|pre-install|post|packages))'
+        'name': 'invalid.illegal.missingend.kickstart'
+      }
+    ]
+  }
+  {
+    'begin': '^\\s*(%(?:pre|pre-install|post))\\b.*\\s--interpreter(?:\\s+|=)(\\S*perl\\S*).*$'
+    'captures':
+      '1':
+        'name': 'keyword.control.scriptlet.kickstart'
+    'end':'^\\s*(%end)\\s*$'
+    'contentName': 'source.perl.embedded.kickstart'
+    'name': 'scriptlet.perl.kickstart'
+    'patterns': [
+      {
+        'include': 'source.perl'
       }
       {
         'match': '^\\s*(%(?:pre|pre-install|post|packages))'
@@ -62,7 +79,7 @@
   }
   {
     # no --interpreter: assume shell
-    'begin': '^\\s*(%(?:pre|pre-install|post))\\b(\\s+--[^i][^n][^t]\\w+)*$'
+    'begin': '^\\s*(%(?:pre|pre-install|post))\\b(\\s+--[^i][^n][^t]\\w+)*\\s*$'
     'captures':
       '1':
         'name': 'keyword.control.scriptlet.kickstart'
@@ -79,9 +96,9 @@
       }
     ]
   }
+  # comments. this is copy-and-pasted straight from python.cson, so don't ask
+  # me about the weird fancy lookahead stuff
   {
-    # comments. this is copy-and-pasted straight from python.cson, so don't ask
-    # me about the weird fancy lookahead stuff
     'begin': '(^[ \\t]+)?(?=#)'
     'beginCaptures':
       '1':
@@ -116,12 +133,16 @@
         'match': '^\\s*(%(?:pre|pre-install|post|packages))'
         'name': 'invalid.illegal.missingend.kickstart'
       }
+      {
+        'match': '^\\s*#.*$'
+        'name': 'comment.line.number-sign.kickstart'
+      }
     ]
   }
   # kickstart commands
   {
     'comment': 'commands for installation UI'
-    'match': '^\\s*(cmdline|graphical|text|mediacheck|vnc)\\b'
+    'match': '^\\s*(cmdline|graphical|text|mediacheck|vnc|logging)\\b'
     'name': 'support.function.ui.kickstart'
   }
   {
@@ -150,8 +171,44 @@
     'name': 'support.function.install.kickstart'
   }
   {
+    'comment': 'include/append directives'
+    'match': '^\\s*(%include|%ksappend)\\b'
+    'name': 'keyword.control.import.kickstart'
+  }
+  {
     'comment': 'miscellaneous commands'
-    'match': '^\\s*(rescue|updates|device|autostep)\\b'
+    'match': '^\\s*(rescue|updates|device|driverdisk|autostep)\\b'
     'name': 'support.function.misc.kickstart'
+  }
+  # misc bits and pieces
+  {
+    'match': '\\$6\\$(rounds=\\d+\\$)?[./0-9A-Za-z]{1,16}\\$[./0-9A-Za-z]{86}'
+    'name': 'string.password-hash.sha512.kickstart'
+  }
+  {
+    'match': '\\$5\\$(rounds=\\d+\\$)?[./0-9A-Za-z]{1,16}\\$[./0-9A-Za-z]{43}'
+    'name': 'string.password-hash.sha256.kickstart'
+  }
+  {
+    'match': '\\$[56]\\$\\S+'
+    'name': 'invalid.illegal.password-hash.kickstart'
+  }
+  {
+    'comment': 'quoted strings'
+    'begin': '([\'\"])'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.string.begin.kickstart'
+    'end': '\\1'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.string.end.kickstart'
+    'name': 'string.quoted.kickstart'
+    'patterns': [
+      {
+        'match': '\\\\[\\$`"\'\\\\\\n]'
+        'name': 'constant.character.escape.kickstart'
+      }
+    ]
   }
 ]
