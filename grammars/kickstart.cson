@@ -3,7 +3,7 @@
 'fileTypes': [
     'ks'
 ]
-'firstLineMatch': '^#( [kK]ickstart|version=(DEVEL|F\\d+|RHEL\\d+))\\b'
+'firstLineMatch': '^#( Kickstart file|version=(DEVEL|F\\d+|RHEL\\d+))\\b'
 'patterns': [
   # scriptlets (%pre, %post, etc.) with language-specific syntax highlighting.
   # python, perl, and shell are the only things I've ever seen used, so..
