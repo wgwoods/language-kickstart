@@ -1,9 +1,17 @@
 # language-kickstart
 
-Atom syntax highlighting for [Kickstart] files.
+Atom syntax highlighting for [Kickstart] files, featuring:
 
+* highlighting of known commands and valid `%package` symbols
+* `%pre`/`%post` scriptlets highlighted according to their `--interpreter`
+* catches invalid password hashes and missing section `%end`
+
+### Screenshot
+
+![screenshot](http://wgwoods.github.io/img/language-kickstart.png)
+
+## Contributing
+
+Pull requests welcome!
 
 [Kickstart]: https://github.com/rhinstaller/pykickstart/blob/master/docs/kickstart-docs.rst
-<!---
-![A screenshot of your package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
--->

@@ -1,6 +1,6 @@
 {
   "name": "language-kickstart",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "language support for kickstart files",
   "homepage": "http://atom.github.io/language-kickstart",
   "repository": "https://github.com/wgwoods/language-kickstart.git",
